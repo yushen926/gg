@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>匯率轉換工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            text-align: center;
+            color: #333;
+        }
+        .rate {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>匯率轉換工具</h2>
+
+    <label>金額</label>
+    <input type="number" id="amount" placeholder="輸入金額">
+
+    <label>從</label>
+    <select id="from">
+        <option value="TWD">台幣 (TWD)</option>
+        <option value="JPY">日幣 (JPY)</option>
+        <option value="USD">美金 (USD)</option>
+    </select>
+
+    <label>轉成</label>
+    <select id="to">
+        <option value="JPY">日幣 (JPY)</option>
+        <option value="USD">美金 (USD)</option>
+        <option value="TWD">台幣 (TWD)</option>
+    </select>
+
+    <button onclick="convert()">轉換</button>
+
+    <div class="result" id="result">結果會顯示在這裡</div>
+
+    <div class="rate">
+        <strong>目前匯率（可自行修改）：</strong><br>
+        1 USD = <input type="number" id="usdToTwd" value="32" style="width:70px;"> TWD<br>
+        1 USD = <input type="number" id="usdToJpy" value="150" style="width:70px;"> JPY
+    </div>
+</div>
+
+<script>
+function convert() {
+    const amount = parseFloat(document.getElementById("amount").value);
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+
+    const usdToTwd = parseFloat(document.getElementById("usdToTwd").value);
+    const usdToJpy = parseFloat(document.getElementById("usdToJpy").value);
+
+    if (isNaN(amount)) {
+        document.getElementById("result").innerText = "請輸入金額";
+        return;
+    }
+
+    // 先全部轉成 USD
+    let usd;
+    if (from === "USD") usd = amount;
+    if (from === "TWD") usd = amount / usdToTwd;
+    if (from === "JPY") usd = amount / usdToJpy;
+
+    // 再從 USD 轉成目標幣別
+    let result;
+    if (to === "USD") result = usd;
+    if (to === "TWD") result = usd * usdToTwd;
+    if (to === "JPY") result = usd * usdToJpy;
+
+    document.getElementById("result").innerText =
+        `轉換結果：${result.toFixed(2)} ${to}`;
+}
+</script>
+
+</body>
+</html>
