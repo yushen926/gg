@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>匯率轉換工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f2f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #ffffff;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 18px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .rates {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+    .rates input {
+      width: 80px;
+      padding: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>匯率轉換工具</h1>
+
+  <label>金額</label>
+  <input type="number" id="amount" placeholder="輸入金額">
+
+  <label>從</label>
+  <select id="fromCurrency">
+    <option value="TWD">台幣 TWD</option>
+    <option value="JPY">日幣 JPY</option>
+    <option value="USD">美金 USD</option>
+  </select>
+
+  <label>轉成</label>
+  <select id="toCurrency">
+    <option value="JPY">日幣 JPY</option>
+    <option value="USD">美金 USD</option>
+    <option value="TWD">台幣 TWD</option>
+  </select>
+
+  <button onclick="convert()">轉換</button>
+
+  <div class="result" id="result">—</div>
+
+  <div class="rates">
+    <strong>匯率設定（可自行調整）</strong><br><br>
+    1 USD = <input type="number" id="usdToTwd" value="32"> TWD<br>
+    1 USD = <input type="number" id="usdToJpy" value="150"> JPY
+  </div>
+</div>
+
+<script>
+function convert() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  const from = document.getElementById("fromCurrency").value;
+  const to = document.getElementById("toCurrency").value;
+
+  const usdToTwd = parseFloat(document.getElementById("usdToTwd").value);
+  const usdToJpy = parseFloat(document.getElementById("usdToJpy").value);
+
+  if (isNaN(amount)) {
+    document.getElementById("result").innerText = "請輸入正確金額";
+    return;
+  }
+
+  // 全部先轉成 USD
+  let usd;
+  switch (from) {
+    case "USD": usd = amount; break;
+    case "TWD": usd = amount / usdToTwd; break;
+    case "JPY": usd = amount / usdToJpy; break;
+  }
+
+  // 再轉成目標幣別
+  let result;
+  switch (to) {
+    case "USD": result = usd; break;
+    case "TWD": result = usd * usdToTwd; break;
+    case "JPY": result = usd * usdToJpy; break;
+  }
+
+  document.getElementById("result").innerText =
+    `${result.toFixed(2)} ${to}`;
+}
+</script>
+
+</body>
+      </html>
